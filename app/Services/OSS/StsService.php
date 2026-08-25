@@ -36,7 +36,10 @@ class StsService
         $bucket = config('aliyun.oss.bucket');
         $duration = config('aliyun.oss.sts_duration', 1800);
 
-        // 限定仅能上传到指定目录
+        // 统一根前缀（多项目共用一个 bucket 时用目录区分，如 novel-platform/）
+        $rootPrefix = $this->rootPrefix();
+
+        // 限定仅能上传到指定目录（含统一根前缀）
         $policy = [
             'Version' => '1',
             'Statement' => [
@@ -51,7 +54,7 @@ class StsService
                         'oss:ListParts',
                     ],
                     'Resource' => [
-                        "acs:oss:*:*:{$bucket}/{$prefix}*",
+                        "acs:oss:*:*:{$bucket}/{$rootPrefix}{$prefix}*",
                     ],
                 ],
             ],
@@ -90,6 +93,15 @@ class StsService
     }
 
     /**
+     * 统一根前缀，如 novel-platform/
+     */
+    protected function rootPrefix(): string
+    {
+        $prefix = rtrim((string) config('aliyun.oss.prefix'), '/');
+        return $prefix === '' ? '' : $prefix . '/';
+    }
+
+    /**
      * 组装最终返回给前端的凭证结构
      */
     protected function buildToken(array $credentials, string $prefix): array
@@ -102,7 +114,7 @@ class StsService
             'Region' => config('aliyun.region', 'oss-cn-hangzhou'),
             'Endpoint' => 'https://' . config('aliyun.oss.endpoint'),
             'Bucket' => config('aliyun.oss.bucket'),
-            'Prefix' => $prefix . date('Y/m/d') . '/',
+            'Prefix' => $this->rootPrefix() . $prefix . date('Y/m/d') . '/',
             'PartSize' => config('aliyun.oss.part_size'),
             'Concurrency' => config('aliyun.oss.max_concurrency'),
         ];
@@ -121,7 +133,7 @@ class StsService
             'Region' => 'oss-cn-hangzhou',
             'Endpoint' => 'https://' . config('aliyun.oss.endpoint'),
             'Bucket' => config('aliyun.oss.bucket', 'your-bucket-name'),
-            'Prefix' => $prefix . date('Y/m/d') . '/',
+            'Prefix' => $this->rootPrefix() . $prefix . date('Y/m/d') . '/',
             'PartSize' => config('aliyun.oss.part_size'),
             'Concurrency' => config('aliyun.oss.max_concurrency'),
             'Mock' => true,

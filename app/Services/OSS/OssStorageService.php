@@ -91,6 +91,12 @@ class OssStorageService
             $key .= '.' . $extension;
         }
 
+        // 统一根前缀（多项目共用 bucket 时用目录区分，如 novel-platform/）
+        $root = rtrim((string) config('aliyun.oss.prefix'), '/');
+        if ($root !== '') {
+            $key = $root . '/' . $key;
+        }
+
         return $key;
     }
 }

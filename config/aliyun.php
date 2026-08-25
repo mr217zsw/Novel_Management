@@ -30,6 +30,9 @@ return [
         'sts_region' => env('OSS_STS_REGION', 'cn-hangzhou'),
         'sts_duration' => (int) env('OSS_STS_DURATION', 1800),
 
+        // 统一对象名前缀（多项目共用一个 bucket 时用目录区分，如 novel-platform/）
+        'prefix' => env('OSS_PREFIX', ''),
+
         // 分片上传
         'part_size' => (int) env('OSS_PART_SIZE', 5242880), // 5MB
         'max_concurrency' => (int) env('OSS_MAX_CONCURRENCY', 3),
