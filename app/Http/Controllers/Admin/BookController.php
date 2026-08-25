@@ -50,8 +50,8 @@ class BookController extends Controller
         ]);
 
         $validated['tags'] = $request->input('tags', []);
-        $validated['status'] = Book::STATUS_PENDING_AUDIT ?? 1;
-        $validated['audit_status'] = 0;
+        $validated['status'] = Book::STATUS_PENDING_AUDIT;
+        $validated['audit_status'] = Book::AUDIT_PENDING;
 
         $book = Book::create($validated);
 

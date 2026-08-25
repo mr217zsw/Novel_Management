@@ -15,6 +15,17 @@ class Book extends Model
 {
     use HasFactory;
 
+    // status 状态
+    public const STATUS_DRAFT = 0;          // 草稿
+    public const STATUS_PENDING_AUDIT = 1;  // 待审核
+    public const STATUS_PUBLISHED = 2;      // 已上架
+    public const STATUS_OFFLINE = 3;        // 已下架
+
+    // audit_status 审核状态
+    public const AUDIT_PENDING = 0;         // 待审
+    public const AUDIT_PASSED = 1;          // 通过
+    public const AUDIT_REJECTED = 2;        // 驳回
+
     protected $table = 'books';
 
     protected $fillable = [

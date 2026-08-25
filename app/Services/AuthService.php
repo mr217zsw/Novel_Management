@@ -116,9 +116,12 @@ class AuthService
      */
     public function adminLogin(string $phoneOrEmail, string $password): array
     {
-        $user = User::where('phone', $phoneOrEmail)
-            ->orWhere('email', $phoneOrEmail)
-            ->first();
+        // users 表无 email 字段，仅支持手机号/账号登录
+        $user = User::where('phone', $phoneOrEmail)->first();
+
+        if (!$user) {
+            throw new RuntimeException('账号或密码错误');
+        }
 
         if (!$user || !Hash::check($password, $user->password ?? '')) {
             throw new RuntimeException('账号或密码错误');
