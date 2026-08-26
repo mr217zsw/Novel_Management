@@ -57,7 +57,7 @@ class DemoDataSeeder extends Seeder
                 'title' => '都市异能：我的系统有点强',
                 'category_id' => $categoryId,
                 'description' => '一个普通青年的都市逆袭之路。',
-                'tags' => ['都市', '系统', '爽文'],
+                'tags' => json_encode(['都市', '系统', '爽文'], JSON_UNESCAPED_UNICODE),
                 'copyright_type' => 2,
                 'royalty_rate' => 50,
                 'min_price' => 10,
