@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,9 +39,6 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             // 生产环境接入 Sentry / ELK
-            // if ($this->shouldReport($e)) {
-            //     app('sentry')->captureException($e);
-            // }
         });
     }
 
@@ -100,6 +98,22 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $e);
+    }
+
+    /**
+     * 重写控制台异常渲染，规避 Laravel 10 + Symfony Console 6.4 的
+     * renderThrowable($output) 参数为 null 的兼容性 bug。
+     */
+    public function renderForConsole($output, Throwable $e)
+    {
+        // 若 output 为 null，直接输出到 STDERR，避免 Symfony 崩溃
+        if (!$output instanceof OutputInterface) {
+            fwrite(STDERR, $e->getMessage() . "\n");
+            fwrite(STDERR, $e->getTraceAsString() . "\n");
+            return;
+        }
+
+        parent::renderForConsole($output, $e);
     }
 
     protected function isHttpStatus(Throwable $e): bool
