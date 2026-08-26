@@ -85,7 +85,8 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // 配合 /admin 部署路径
+  history: createWebHistory(import.meta.env.BASE_URL || '/admin/'),
   routes
 })
 

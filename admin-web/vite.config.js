@@ -4,6 +4,8 @@ import { fileURLToPath, URL } from 'node:url'
 
 // Vite 配置
 export default defineConfig({
+  // 部署到 /admin 子路径（配合 Nginx 方案 A）
+  base: process.env.VITE_BASE_PATH || '/admin/',
   plugins: [vue()],
   resolve: {
     alias: {
