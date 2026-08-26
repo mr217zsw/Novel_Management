@@ -69,22 +69,10 @@ $app->singleton(
 |
 */
 
-$status = $app->make(Kernel::class)->handle($input = new ArgvInput);
+$kernel = $app->make(Kernel::class);
 
-echo $app->make(Kernel::class)->output;
+$status = $kernel->handle($input = new ArgvInput);
 
-/*
-|--------------------------------------------------------------------------
-| Shutdown The Application
-|--------------------------------------------------------------------------
-|
-| Once Artisan has finished running. We will free up the input object
-| and perform a final shutdown so the kernel can handle an urgent
-| request. Once the process is complete, we'll send the response
-| back to the client's browser.
-|
-*/
+$kernel->terminate($input, $status);
 
-$code = $app->terminate($input, $status);
-
-exit($code);
+exit($status);
