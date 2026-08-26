@@ -8,7 +8,14 @@
         </div>
       </template>
 
-      <el-table :data="list" v-loading="loading">
+      <el-empty
+        v-if="invalidBook"
+        description="请从「书籍管理」中选择一本书查看章节"
+      >
+        <el-button type="primary" @click="$router.push('/books')">去书籍管理</el-button>
+      </el-empty>
+
+      <el-table v-else :data="list" v-loading="loading">
         <el-table-column prop="chapter_no" label="章号" width="70" />
         <el-table-column prop="title" label="章节标题" />
         <el-table-column prop="word_count" label="字数" width="90" align="right" />
@@ -83,7 +90,9 @@ import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 
 const route = useRoute()
-const bookId = route.params.bookId
+// 校验 bookId 是否为有效数字
+const bookId = /^\d+$/.test(route.params.bookId || '') ? Number(route.params.bookId) : null
+const invalidBook = !bookId
 const list = ref([])
 const loading = ref(false)
 const dialogVisible = ref(false)
@@ -105,7 +114,7 @@ const auditText = (s) => ['待审', '通过', '驳回'][s] || '-'
 const auditType = (s) => ['warning', 'success', 'danger'][s] || 'info'
 
 const loadList = async () => {
-  if (!bookId) return
+  if (!bookId || invalidBook) return
   loading.value = true
   try {
     const res = await request.get(`/admin/books/${bookId}/chapters`, {
