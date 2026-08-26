@@ -12,7 +12,8 @@ class Cors
 {
     public function handle(Request $request, Closure $next)
     {
-        $allowedOrigins = explode(',', config('cors.allowed_origins', '*'));
+        // config/cors.php 中 allowed_origins 已是数组，直接使用
+        $allowedOrigins = config('cors.allowed_origins', ['*']);
         $origin = $request->header('Origin');
 
         $allowOrigin = in_array('*', $allowedOrigins, true) || in_array($origin, $allowedOrigins, true)
