@@ -75,7 +75,7 @@ class StsService
             ->product('Sts')
             ->version('2015-04-01')
             ->action('AssumeRole')
-            ->method('POST')
+            ->method('POST')->scheme('https')
             ->host('sts.aliyuncs.com')
             ->options([
                 'query' => [
