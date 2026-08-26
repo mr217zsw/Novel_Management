@@ -30,11 +30,12 @@ require __DIR__.'/vendor/autoload.php';
 | which serves as the "glue" for all of the components of Laravel, and is
 | the IoC container for the system binding all of the various parts.
 |
+| 注意：使用 dirname(__DIR__) 作为 basePath，避免 $_ENV['APP_BASE_PATH']
+| 为空字符串时导致 config 加载目录错误。
+|
 */
 
-$app = new Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+$app = new Application(dirname(__DIR__));
 
 /*
 |--------------------------------------------------------------------------
